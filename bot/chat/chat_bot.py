@@ -22,16 +22,23 @@ class ChatBot():
         self.batch_size = 16
 
     def load_test(self):
+        self.load_my_bot('/resource/tokenizer', '/resource/test')
+
+    def load_my_bot(self, token_path, weight_path):
+        self.load_tokenizer(token_path)
+        self.bot = Seq2seq(co.UNITS, co.VOCAB_SIZE, co.EMBEDDING_DIM, co.TIME_STEPS, self.start_token_idx, self.end_token_idx)
+        self.load_weight(weight_path)
+
+    def load_weight(self, weight):
         base_dir = current_app.root_path
-        name = '/resource/tokenizer'
+        self.bot.load_weights(base_dir + weight)
+
+    def load_tokenizer(self, name):
+        base_dir = current_app.root_path
         self.tokenizer = load(base_dir + name)
-
         self.DATA_LENGTH = co.DATA_LENGTH
-        START_TOKEN = self.tokenizer.word_index['<START>']
-        END_TOKEN = self.tokenizer.word_index['<END>']
-
-        self.bot = Seq2seq(co.UNITS, co.VOCAB_SIZE, co.EMBEDDING_DIM, co.TIME_STEPS, START_TOKEN, END_TOKEN)
-        self.bot.load_weights(base_dir + '/resource/test')
+        self.start_token_idx = self.tokenizer.word_index['<START>']
+        self.end_token_idx = self.tokenizer.word_index['<END>']
 
     def get_vocab_size(self):
         return len(self.tokenizer.index_word) + 1

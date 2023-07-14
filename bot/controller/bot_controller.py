@@ -24,7 +24,10 @@ def test2():
     msg = question["msg"]
 
     bot = ChatBot()
-    bot.load_test()  # 테스트 봇 불러오기
+    # bot.load_test()  # 테스트 봇 불러오기
+
+    bot.load_my_bot('/resource/sample1_tokenizer.pkl', '/resource/sample1')
+
     answer = bot.run_chatbot(msg)
 
     data = {
